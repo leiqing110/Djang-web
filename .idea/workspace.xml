@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4d6ce532-bd7e-4bba-a168-c343d97d0a00" name="Default Changelist" comment="" />
+    <list default="true" id="4d6ce532-bd7e-4bba-a168-c343d97d0a00" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysite/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/mysite/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mysite/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/mysite/urls.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +108,7 @@
         <entry file="file://$PROJECT_DIR$/APP01/views.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4655">
-              <caret line="252" lean-forward="true" selection-start-line="252" selection-end-line="252" />
+              <caret line="252" selection-start-line="252" selection-end-line="252" />
             </state>
           </provider>
         </entry>
@@ -113,7 +117,7 @@
         <entry file="file://$PROJECT_DIR$/mysite/urls.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="855">
-              <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
+              <caret line="48" selection-start-line="48" selection-end-line="48" />
             </state>
           </provider>
         </entry>
@@ -193,13 +197,8 @@
         <subPane>
           <expand>
             <path>
-              <item name="Django-website-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Django-website-master" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Django-website-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Django-website-master" type="462c0819:PsiDirectoryNode" />
-              <item name="APP01" type="462c0819:PsiDirectoryNode" />
+              <item name="Djang-web" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Djang-web" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -333,11 +332,12 @@
       <workItem from="1556499719580" duration="5212000" />
       <workItem from="1556594236179" duration="1437000" />
       <workItem from="1556596487078" duration="43000" />
+      <workItem from="1556597472729" duration="573000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="168669000" />
+    <option name="totallyTimeSpent" value="169242000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -350,9 +350,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1307" height="784" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7788162" visible="true" weight="0.22854851" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.7788162" visible="true" weight="0.23255815" />
       <window_info id="Structure" order="1" sideWeight="0.5011442" side_tool="true" weight="0.2534082" />
       <window_info id="Favorites" order="2" sideWeight="0.2211838" side_tool="true" weight="0.2534082" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -731,14 +730,14 @@
     <entry file="file://$PROJECT_DIR$/APP01/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4655">
-          <caret line="252" lean-forward="true" selection-start-line="252" selection-end-line="252" />
+          <caret line="252" selection-start-line="252" selection-end-line="252" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mysite/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="855">
-          <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
+          <caret line="48" selection-start-line="48" selection-end-line="48" />
         </state>
       </provider>
     </entry>
