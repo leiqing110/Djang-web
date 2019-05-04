@@ -91,7 +91,7 @@ DATABASES = {
         #端口
         'PORT':3306,
         #数据库名字
-        'NAME': "day61",
+        'NAME': "db4",
         'USER':'root',
         'PASSWORD':'root'
     }

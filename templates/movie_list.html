@@ -89,6 +89,7 @@
                             <th>电影名称</th>
                             <th>放映时间</th>
                             <th>放映影厅</th>
+                            <th>票价</th>
                             <th>操作</th>
                         </tr>
                         </thead>
@@ -98,17 +99,21 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ movie.mname }}</td>
-                                <td>{{ movie.time}}</td>
+                                <td>{{ movie.time|date:"Y-m-d H:i:s" }}</td>
                                 <td>{{ movie.yingting }}</td>
+                                <td>{{ movie.price }}</td>
                                 <td>
+                                    <a class="btn btn-info" href="/add_cart/?id={{ movie.id }}">加入购物车</a>
                                     <a class="btn btn-danger" href="/delete_movie/?id={{ movie.id }}">删除</a>
-                                    <a class="btn btn-info" href="/edit_movie/?id={{ movie.id }}">编辑</a>
+                                    <a class="btn btn-danager" href="/edit_movie/?id={{ movie.id }}">编辑</a>
                                 </td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
-
+                    <div style="position: absolute;right:85px;top:196px " >
+                        <a class="btn btn-success" href="/cart/">去结算</a>
+                    </div>
                     <nav aria-label="Page navigation" class="text-right">
                         <ul class="pagination">
                             <li>

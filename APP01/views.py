@@ -141,6 +141,31 @@ def movie_list(request):
     else:
         return render(request, "movie_list.html", {"all_movie": all_movie, "user":"匿名用户"})
 
+#加入购物车
+def add_cart(request):
+    #request.session["cart_id"] = 1  # 获取对象的ID
+    user_id = request.session.get("user_id")  # 获取sessiond的user_id
+    if user_id == None:
+        messages.success(request, "您未登录，请先登陆")
+        return redirect("/login/")
+
+    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    all_movie = models.Movies.objects.all()
+    movie_id = request.GET.get("id")#获取电影ID
+    #models.Huiyuan.objects.get(id=delete_id).delete()
+    movie_obj = models.Movies.objects.get(id=movie_id)#获取电影对象
+    cart_obj = models.Cart.objects.create(admin_user_id = user_id)
+    cart_obj.products1.add(movie_obj)
+    return redirect("/movie_list/")
+def cart(request):
+    user_id = request.session.get("user_id")  # 获取sessiond的user_id
+    #cart_id = request.session.get("cart")  # 获取sessiond的user_id 这里是管理员ID
+    cart_obj = models.Cart.objects.filter(Q(admin_user=user_id))
+    print(cart_obj.movies.all)
+    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    # 在html页面完成字符串的替换
+    if user_obj:
+        return render(request, "cart.html", {"user": user_obj,"carts":cart_obj.all})
 
 def delete_movie(request):
     #删除指定的id
@@ -166,9 +191,10 @@ def add_movie(request):
         new_intro = request.POST.get("movieintro")
         new_time = request.POST.get("movietime")
         new_yingting = request.POST.get("yingting")
-        # #创建新书对象
+        new_price = request.POST.get("price")
 
-        models.Movies.objects.create(mname=new_name, intro=new_intro,time=new_time,yingting=new_yingting)
+
+        models.Movies.objects.create(mname=new_name, intro=new_intro,time=new_time,yingting=new_yingting,price=new_price)
         # #返回到书籍列表页
         return redirect("/movie_list/")
     ret = models.Movies.objects.all()
@@ -457,4 +483,6 @@ def upload(request):
                 #写入本地文件
                 f.write(chunk)
         return HttpResponse("上传OK")
+
+
 

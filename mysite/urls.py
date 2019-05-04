@@ -46,8 +46,9 @@ url(r'^add_huiyuan/',views.add_huiyuan),
 url(r'^upload/',views.upload),
 url(r'^search/',views.search),
 url(r'^search_huiyuan/',views.search_huiyuan),
-
+url(r'^add_cart/',views.add_cart),
 url(r'^search_good/',views.search_good),
 url(r'^logout/',views.logout),
+url(r'^cart/',views.cart),
 
 ]
