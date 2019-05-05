@@ -20,8 +20,9 @@ class UserInfo(models.Model):#用户信息表
 class Cart(models.Model):
 
     id = models.AutoField(primary_key=True)  # 创建一个自增的主键
+    owner = models.OneToOneField( UserInfo, default="",on_delete=models.CASCADE)
     movies = models.ManyToManyField(to="Movies")
-    goods = models.ManyToManyField(to="Goods")
+    #goods = models.ManyToManyField(to="Goods")
 
 class Movies(models.Model):
     id = models.AutoField(primary_key=True)#创建一个自增的主键
@@ -47,6 +48,7 @@ class Huiyuan(models.Model):
      name = models.CharField(max_length=20, null=False)  # 创建一个varchar类型的不能为空的字段
      pwd = models.CharField(max_length=20,default="123")#创建会员密码
      price = models.IntegerField()  #充值信息
+
 class Publisher(models.Model):
     id = models.AutoField(primary_key=True)
     #创建一个varchar(64)的唯一的不为空的字段

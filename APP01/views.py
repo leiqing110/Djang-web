@@ -149,23 +149,36 @@ def add_cart(request):
         messages.success(request, "您未登录，请先登陆")
         return redirect("/login/")
 
-    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    user_obj = models.UserInfo.objects.filter(id=user_id)[0]
     all_movie = models.Movies.objects.all()
     movie_id = request.GET.get("id")#获取电影ID
     #models.Huiyuan.objects.get(id=delete_id).delete()
     movie_obj = models.Movies.objects.get(id=movie_id)#获取电影对象
-    cart_obj = models.Cart.objects.create(admin_user_id = user_id)
-    cart_obj.products1.add(movie_obj)
+    cart_obj = models.Cart.objects.get(owner= user_obj)
+    if cart_obj:
+        cart = models.Cart.objects.get(owner=user_id)
+        cart.movies.add(movie_obj)
+        #cart.save()
+        print("1")
+    else:
+        cart = models.Cart.objects.create(owner=user_obj)
+        cart.owner.add(user_obj)
+        cart.movies.add(movie_obj)
+        #cart_obj.movies.add(movie_obj)
+        print("2")
     return redirect("/movie_list/")
+
 def cart(request):
     user_id = request.session.get("user_id")  # 获取sessiond的user_id
     #cart_id = request.session.get("cart")  # 获取sessiond的user_id 这里是管理员ID
-    cart_obj = models.Cart.objects.filter(Q(admin_user=user_id))
-    print(cart_obj.movies.all)
+    cart_obj = models.Cart.objects.filter(owner = user_id)
+    if cart_obj:
+        cart = models.Cart.objects.get(owner=user_id)
+        movie_list = cart.movies.all()
     user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
     # 在html页面完成字符串的替换
     if user_obj:
-        return render(request, "cart.html", {"user": user_obj,"carts":cart_obj.all})
+        return render(request, "cart.html", {"user": user_obj,"movie_lists":movie_list})
 
 def delete_movie(request):
     #删除指定的id
