@@ -6,7 +6,12 @@ from django.contrib import auth
 from django.contrib import messages
 
 from django.contrib.auth import authenticate, login, logout
-
+global flag,flag2,price1,price2,price3
+flag = True
+flag2 = True
+price1 = 0
+price2 = 0
+price3 = 0
 # def check_login(f):
 #     def inner(request,*args,**kwargs):
 #         if request.session.get("is_login") == "1":
@@ -14,6 +19,8 @@ from django.contrib.auth import authenticate, login, logout
 #         else:
 #             return redirect("/login/")
 #     return inner
+
+
 
 def login(request):#实现登陆操作
     #如果你是get请求
@@ -141,45 +148,181 @@ def movie_list(request):
     else:
         return render(request, "movie_list.html", {"all_movie": all_movie, "user":"匿名用户"})
 
-#加入购物车
-def add_cart(request):
+
+
+def add_cart(request):#电影票加入购物车
+
+    global flag,flag2
     #request.session["cart_id"] = 1  # 获取对象的ID
     user_id = request.session.get("user_id")  # 获取sessiond的user_id
     if user_id == None:
         messages.success(request, "您未登录，请先登陆")
         return redirect("/login/")
 
+
     user_obj = models.UserInfo.objects.filter(id=user_id)[0]
     all_movie = models.Movies.objects.all()
     movie_id = request.GET.get("id")#获取电影ID
-    #models.Huiyuan.objects.get(id=delete_id).delete()
+
     movie_obj = models.Movies.objects.get(id=movie_id)#获取电影对象
-    cart_obj = models.Cart.objects.get(owner= user_obj)
-    if cart_obj:
+    if flag == True:#第一次执行加入购物车的操作
+        cart_obj = models.Cart.objects.filter(owner= user_obj)
+        flag = False #标志位
+        movie_obj.num = 1  # 第一次加入购物车  数量默认为1
+        movie_obj.save()
+        cart = models.Cart.objects.create(owner=user_obj)
+        cart.owner.id(user_obj)
+        cart.movies.add(movie_obj)
+        # cart_obj.movies.add(movie_obj)
+        print("2")
+        messages.success(request, "加入购物车成功")
+        return redirect("/movie_list/")
+    else:
+        cart_obj = models.Cart.objects.get(owner=user_obj)
+        for movie in cart_obj.movies.all():
+            if movie_obj == movie:
+                movie_obj.num += 1
+                movie_obj.save()
+                print("ID:")
+                print(movie.id)
+        #return redirect("/movie_list/")
+
+    if cart_obj and movie_obj:
         cart = models.Cart.objects.get(owner=user_id)
         cart.movies.add(movie_obj)
-        #cart.save()
-        print("1")
-    else:
-        cart = models.Cart.objects.create(owner=user_obj)
-        cart.owner.add(user_obj)
-        cart.movies.add(movie_obj)
-        #cart_obj.movies.add(movie_obj)
-        print("2")
+        # val = val+1
+        # cart.save()
+        print("数量")
+        print(movie_obj.num)
+        messages.success(request, "加入购物车成功")
+        return redirect("/movie_list/")
+
+
+    # cart = models.Cart.objects.create(owner=user_obj)
+    # cart.owner.id(user_obj)
+    # cart.movies.add(movie_obj)
+    # # cart_obj.movies.add(movie_obj)
+    # print("2")
+    # messages.success(request, "加入购物车成功")
+    # return redirect("/movie_list/")
+    # #movie_obj2 = models.Cart.objects.get(movies= movie_obj)
+
+
+
+
+
+def delete_cart(request):#清空购物车
+    global flag
+    flag = True
+    global price1
+    global price2
+    global price3
+
+    user_id = request.session.get("user_id")  # 获取sessiond的user_id
+    if user_id == None:
+        messages.success(request, "您未登录，请先登陆")
+        return redirect("/login/")
+
+    user_obj = models.UserInfo.objects.get(id=user_id)
+   # all_good = models.Goods.objects.all()
+   # good_id = request.GET.get("id")  # 获取电影ID
+
+   # good_obj = models.Goods.objects.get(id=good_id)  # 获取电影对象
+    cart_obj = models.Cart.objects.get(owner=user_obj).delete()
+    all_movie = models.Movies.objects.all()
+    for movie in all_movie:
+        movie.num = 1
+        movie.save()
+    price3 = 0
+    price2 = 0
+    price1 = 0
+    messages.success(request,"购物车已清空")
     return redirect("/movie_list/")
 
+def add_cart2(request):#商品加入购物车
+    global flag2
+    # request.session["cart_id"] = 1  # 获取对象的ID
+    user_id = request.session.get("user_id")  # 获取sessiond的user_id
+    if user_id == None:
+        messages.success(request, "您未登录，请先登陆")
+        return redirect("/login/")
+
+    user_obj = models.UserInfo.objects.filter(id=user_id)[0]
+    all_good = models.Goods.objects.all()
+    good_id = request.GET.get("id")  # 获取电影ID
+    good_obj = models.Goods.objects.get(id=good_id)  # 获取电影对象
+    if flag2 == True:
+        cart_obj = models.Cart.objects.filter(owner=user_obj)
+        flag2 = False  # 标志位
+        good_obj.num = 1  # 第一次加入购物车  数量默认为1
+        good_obj.save()
+
+        cart = models.Cart.objects.create(owner=user_obj)
+        cart.owner.id(user_obj)
+        cart.movies.add(good_obj)
+        # cart_obj.movies.add(movie_obj)
+        print("2")
+        messages.success(request, "加入购物车成功")
+        return redirect("/good_list/")
+
+    else:
+        cart_obj = models.Cart.objects.get(owner=user_obj)
+        for good in cart_obj.goods.all():
+            if good_obj == good:
+                good_obj.num += 1
+                good_obj.save()
+                print("ID:")
+                print(good.id)
+    if cart_obj and good_id:
+        cart = models.Cart.objects.get(owner=user_id)
+        cart.goods.add(good_obj)
+        #cart.owner.add(user_obj)
+        cart.save()
+    # elif (not cart_obj) and good_obj:
+    #     cart = models.Cart.objects.create(owner=user_obj)
+    #     cart.owner.add(user_obj)
+    #     cart.goods.add(good_obj)
+    #     # cart_obj.movies.add(movie_obj)
+    #     print("2")
+
+    return redirect("/goods_list/")
 def cart(request):
+    global price1
+    global price2
+    global price3
     user_id = request.session.get("user_id")  # 获取sessiond的user_id
     #cart_id = request.session.get("cart")  # 获取sessiond的user_id 这里是管理员ID
     cart_obj = models.Cart.objects.filter(owner = user_id)
     if cart_obj:
         cart = models.Cart.objects.get(owner=user_id)
         movie_list = cart.movies.all()
+        goods_list = cart.goods.all()
     user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
     # 在html页面完成字符串的替换
     if user_obj:
-        return render(request, "cart.html", {"user": user_obj,"movie_lists":movie_list})
+        return render(request, "cart.html", {"user": user_obj,"movie_lists":movie_list,"good_lists":goods_list,"all_price":price3})
 
+def count(request):
+    global price1
+    global price2
+    global price3
+    user_id = request.session.get("user_id")  # 获取sessiond的user_id
+    #cart_id = request.session.get("cart")  # 获取sessiond的user_id 这里是管理员ID
+    cart_obj = models.Cart.objects.filter(owner=user_id)
+    if cart_obj:
+        cart = models.Cart.objects.get(owner=user_id)
+        movie_list = cart.movies.all()
+        if movie_list:
+            for movie in movie_list:
+                price1 += movie.price*movie.num
+        goods_list = cart.goods.all()
+        if goods_list:
+            for good in goods_list:
+                price2 += good.price*good.num
+        price3 = price1 + price2
+    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    return render(request, "cart.html",
+                  {"user": user_obj, "movie_lists": movie_list, "good_lists": goods_list, "all_price": price3})
 def delete_movie(request):
     #删除指定的id
     del_id = request.GET.get("id",None)
