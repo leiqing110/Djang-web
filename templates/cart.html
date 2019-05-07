@@ -31,7 +31,8 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">购物车</h3>
                 </div>
-            <a class="btn btn-danger" href="/delete_cart/">清空购物车</a>
+
+                <a class="btn btn-danger" href="/delete_cart/">清空购物车</a>
             <a href="/movie_list/">返回</a>
                 <div class="panel-body">
                     <table class="table table-bordered" style="text-align:center;vertical-align:middle;" >
@@ -77,17 +78,19 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                 <a class="btn btn-danger" href="/count/">核算</a>
-                    <form action="/add_user/" method="post">
+                 <a             style="position: absolute;right:85px;top:250px "  class="btn btn-danger" href="/count/">核算</a>
+
                         <div class="form-group">
                             <label for="cart">总价：</label>
                             <label>{{ all_price }}</label>
                         </div>
+                    <form action="/settle_accounts/" method="post">
                         <div class="form-group">
-                            <label for="user_pwd">支付会员账号</label>
-                            <input type="text" class="form-control" id="user_pwd" placeholder="会员ID" name="huiyuan">
+                            <label for="huiyuan">支付会员账号</label>
+                             <input tupe="text" style="display: none" name="all_price" value="{{ all_price }}"></input>
+                            <input type="text" class="form-control" id="huiyuan" placeholder="会员ID" name="huiyuan">
                         </div>
-                        <button type="submit" class="btn btn-success">提交</button>
+                        <button  style="position:relative;left:418px" type="submit" class="btn btn-success">结账</button>
                     </form>
                 </div>
             </div>

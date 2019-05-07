@@ -54,4 +54,5 @@ url(r'^add_cart2/',views.add_cart2),
 url(r'^add_cart/',views.add_cart),
 url(r'^delete_cart/',views.delete_cart),
 url(r'^count',views.count),
+url(r'^settle_accounts',views.settle_accounts),
 ]

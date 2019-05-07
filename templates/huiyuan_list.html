@@ -33,7 +33,6 @@
                             <th>序号</th>
                             <th>会员编号</th>
                             <th>会员姓名</th>
-                            <th>密码</th>
                             <th>会员金额</th>
                             <th>操作</th>
                         </tr>
@@ -44,7 +43,6 @@
                             <td>{{ forloop.counter}}</td>
                             <td>{{ huiyuan.id }}</td>
                             <td>{{ huiyuan.name }}</td>
-                            <td>{{ huiyuan.pwd }}</td>
                             <td>{{ huiyuan.price }}</td>
                             <td>
                                 <a class="btn btn-danger" href="/delete_huiyuan/?id={{ huiyuan.id }}">删除</a>

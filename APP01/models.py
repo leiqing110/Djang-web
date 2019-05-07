@@ -39,7 +39,7 @@ class Goods(models.Model):#商品信息表
     intro =  models.TextField()  #商品的描述信息
     price = models.IntegerField()
     type_id = models.ForeignKey(to="Goods_type", on_delete=models.CASCADE)
-    num = models.IntegerField()  # 表示数量
+    num = models.IntegerField(default=1)  # 表示数量
 class Goods_type(models.Model):#商品类型表
     id = models.AutoField(primary_key=True)  # 创建一个自增的主键
     name = models.CharField(max_length=64,null=False,unique=True) #类型名称

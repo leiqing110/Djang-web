@@ -148,8 +148,6 @@ def movie_list(request):
     else:
         return render(request, "movie_list.html", {"all_movie": all_movie, "user":"匿名用户"})
 
-
-
 def add_cart(request):#电影票加入购物车
 
     global flag,flag2
@@ -169,12 +167,14 @@ def add_cart(request):#电影票加入购物车
         cart_obj = models.Cart.objects.filter(owner= user_obj)
         flag = False #标志位
         movie_obj.num = 1  # 第一次加入购物车  数量默认为1
-        movie_obj.save()
-        cart = models.Cart.objects.create(owner=user_obj)
-        cart.owner.id(user_obj)
+        movie_obj.save()#执行保存操作
+        cart = models.Cart.objects.create(owner = user_obj)
+
         cart.movies.add(movie_obj)
-        # cart_obj.movies.add(movie_obj)
-        print("2")
+        #cart.owner.add(user_obj)
+
+        #print("2")
+        cart.save()
         messages.success(request, "加入购物车成功")
         return redirect("/movie_list/")
     else:
@@ -207,10 +207,6 @@ def add_cart(request):#电影票加入购物车
     # return redirect("/movie_list/")
     # #movie_obj2 = models.Cart.objects.get(movies= movie_obj)
 
-
-
-
-
 def delete_cart(request):#清空购物车
     global flag
     flag = True
@@ -230,9 +226,15 @@ def delete_cart(request):#清空购物车
    # good_obj = models.Goods.objects.get(id=good_id)  # 获取电影对象
     cart_obj = models.Cart.objects.get(owner=user_obj).delete()
     all_movie = models.Movies.objects.all()
+    all_good = models.Goods.objects.all()
+
     for movie in all_movie:
         movie.num = 1
         movie.save()
+    for good in all_good:
+        good.num = 1
+        good.save()
+
     price3 = 0
     price2 = 0
     price1 = 0
@@ -252,18 +254,21 @@ def add_cart2(request):#商品加入购物车
     good_id = request.GET.get("id")  # 获取电影ID
     good_obj = models.Goods.objects.get(id=good_id)  # 获取电影对象
     if flag2 == True:
-        cart_obj = models.Cart.objects.filter(owner=user_obj)
+        #cart_obj = models.Cart.objects.filter(owner=user_obj)
         flag2 = False  # 标志位
         good_obj.num = 1  # 第一次加入购物车  数量默认为1
-        good_obj.save()
+
 
         cart = models.Cart.objects.create(owner=user_obj)
-        cart.owner.id(user_obj)
-        cart.movies.add(good_obj)
+        #cart.owner.id(user_obj)
+        cart.goods.add(good_obj)
         # cart_obj.movies.add(movie_obj)
-        print("2")
+        #print("2")
+        cart.save()
+
+        good_obj.save()
         messages.success(request, "加入购物车成功")
-        return redirect("/good_list/")
+        return redirect("/goods_list/")
 
     else:
         cart_obj = models.Cart.objects.get(owner=user_obj)
@@ -323,6 +328,16 @@ def count(request):
     user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
     return render(request, "cart.html",
                   {"user": user_obj, "movie_lists": movie_list, "good_lists": goods_list, "all_price": price3})
+def settle_accounts(request):
+    if request.method == "POST":
+        search = request.POST.get("huiyuan")  # 获取表单内容进行搜索
+        all_price = request.POST.get("all_price")  # 获取总价
+        edit_huiyuan_obj = models.Huiyuan.objects.filter(id=search)[0]
+        edit_huiyuan_obj.price = edit_huiyuan_obj.price - price3
+        edit_huiyuan_obj.save()
+        all_huiyuan_obj = models.Huiyuan.objects.all()
+        return render(request, "huiyuan_list.html", {"all_huiyuan": all_huiyuan_obj})
+
 def delete_movie(request):
     #删除指定的id
     del_id = request.GET.get("id",None)
