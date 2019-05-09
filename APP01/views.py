@@ -34,7 +34,7 @@ def login(request):#实现登陆操作
         #print(email,pwd)
     #做是否登陆成功的判断\
 
-        user = models.AdminInfo.objects.filter(email=email,pwd=pwd1)[0]#返回一个列表,user[0]即为返回对象
+        user = models.UserInfo.objects.filter(email=email,pwd=pwd1)[0]#返回一个列表,user[0]即为返回对象
         #将登陆的用户封装到request.user
         if user:
             #登陆成功
@@ -44,7 +44,7 @@ def login(request):#实现登陆操作
             #1.生成特殊的字符串
             #2.特殊字符串当成KEY，z在数据库中的session表中对应一个session value
             #3.在相应中向浏览器写了一个COOKIE COOKIE的值就是特殊的字符串
-            return redirect("/user_list/")
+            return redirect("/movie_list/")
     return render(request,"login.html")
         #error_msg = "邮箱或密码错误"
     #return HttpResponse('ojbk')
@@ -60,6 +60,11 @@ def user_list(request):
     if user_id == None:
         messages.success(request, "您未登录，请先登陆")
         return redirect("/login/")
+    user_obj = models.UserInfo.objects.filter(id=user_id)[0]
+    if user_obj.name != 'admin':
+        messages.success(request, "对不起，您没有权限查看，请通知管理员")
+        return redirect("/movie_list/")
+
 
     user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
 
@@ -77,13 +82,14 @@ def add_user(request):
         #用户填写了新的用户名，并发送了POST请求
         new_name = request.POST.get("username",None)
         new_pwd = request.POST.get("userpwd",None)
+        new_email = request.POST.get("useremail", None)
         if  new_name:
         #通过ORM去数据库中新创建一条记录
-            models.UserInfo.objects.create(name=new_name,pwd=new_pwd)
+            models.UserInfo.objects.create(name=new_name,pwd=new_pwd,email=new_email)
         #添加完成后跳转到用户列表
             return redirect("/user_list/")
         else:
-            err_msg = "出版社名字不能为空!"
+            err_msg = "名字不能为空!"
 
     return render(request,"add_user.html",{"error":err_msg})
 
@@ -140,7 +146,8 @@ def movie_list(request):
         messages.success(request, "您未登录，请先登陆")
         return redirect("/login/")
 
-    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    user_obj = models.UserInfo.objects.get(id=user_id)
+
     all_movie = models.Movies.objects.all()
     # 在html页面完成字符串的替换
     if user_obj:
@@ -302,7 +309,7 @@ def cart(request):
         cart = models.Cart.objects.get(owner=user_id)
         movie_list = cart.movies.all()
         goods_list = cart.goods.all()
-    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    user_obj = models.UserInfo.objects.filter(id=user_id)[0]
     # 在html页面完成字符串的替换
     if user_obj:
         return render(request, "cart.html", {"user": user_obj,"movie_lists":movie_list,"good_lists":goods_list,"all_price":price3})
@@ -325,7 +332,7 @@ def count(request):
             for good in goods_list:
                 price2 += good.price*good.num
         price3 = price1 + price2
-    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    user_obj = models.UserInfo.objects.filter(id=user_id)[0]
     return render(request, "cart.html",
                   {"user": user_obj, "movie_lists": movie_list, "good_lists": goods_list, "all_price": price3})
 def settle_accounts(request):
@@ -441,7 +448,7 @@ def goods_list(request):
         messages.success(request, "您未登录，请先登陆")
         return redirect("/login/")
 
-    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    user_obj = models.UserInfo.objects.filter(id=user_id)[0]
     all_goods= models.Goods.objects.all()
 
     if user_obj:
@@ -462,7 +469,6 @@ def add_goods(request):
 
 def delete_goods(request):
     # 从URL里获取要删除书籍的id
-
     delete_id = request.GET.get("id")
     # 去数据库中删除指点id的书
     models.Goods.objects.get(id=delete_id).delete()
@@ -498,7 +504,7 @@ def huiyuan_list(request):
     if user_id == None:
         messages.success(request, "您未登录，请先登陆")
         return redirect("/login/")
-    user_obj = models.AdminInfo.objects.filter(id=user_id)[0]
+    user_obj = models.UserInfo.objects.filter(id=user_id)[0]
     all_huiyuan = models.Huiyuan.objects.all()
 
     if user_obj:
@@ -566,6 +572,11 @@ def edit_huiyuan(request):
     #根据id去数据库中把具体的会员对象拿到
     edit_huiyuan_obj = models.Huiyuan.objects.get(id=edit_id)
     return render(request,"edit_huiyuan.html",{"huiyuan_obj":edit_huiyuan_obj})
+
+
+#订单详情
+def order_list(request):
+    pass
 
 def test(request):
     print(request.GET)
