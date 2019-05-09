@@ -286,6 +286,7 @@ def add_cart2(request):#商品加入购物车
                 print("ID:")
                 print(good.id)
     if cart_obj and good_id:
+        messages.success(request, "购物车为空")
         cart = models.Cart.objects.get(owner=user_id)
         cart.goods.add(good_obj)
         #cart.owner.add(user_obj)
@@ -296,7 +297,7 @@ def add_cart2(request):#商品加入购物车
     #     cart.goods.add(good_obj)
     #     # cart_obj.movies.add(movie_obj)
     #     print("2")
-
+    messages.success(request, "购物车为空")
     return redirect("/goods_list/")
 def cart(request):
     global price1
@@ -309,10 +310,23 @@ def cart(request):
         cart = models.Cart.objects.get(owner=user_id)
         movie_list = cart.movies.all()
         goods_list = cart.goods.all()
+    else:
+        messages.success(request, "购物车为空")
+        return redirect("/movie_list/")
     user_obj = models.UserInfo.objects.filter(id=user_id)[0]
     # 在html页面完成字符串的替换
+
     if user_obj:
-        return render(request, "cart.html", {"user": user_obj,"movie_lists":movie_list,"good_lists":goods_list,"all_price":price3})
+        return render(request, "cart.html",
+                      {"user": user_obj, "movie_lists": movie_list, "good_lists": goods_list, "all_price": price3})
+
+#退款操作
+def refund(request):
+
+    order_id = request.GET.get("id",None)#从请求URl中获取ID参数
+    order_obj = models.Order.objects.get(id=order_id).delete()
+    messages.success(request, "退款成功")
+    return redirect("/huiyuan_list/")
 
 def count(request):
     global price1
@@ -343,6 +357,27 @@ def settle_accounts(request):
         edit_huiyuan_obj.price = edit_huiyuan_obj.price - price3
         edit_huiyuan_obj.save()
         all_huiyuan_obj = models.Huiyuan.objects.all()
+
+        #生成订单操作
+        user_id = request.session.get("user_id")  # 获取sessiond的user_id
+        cart_obj = models.Cart.objects.filter(owner=user_id)
+        if cart_obj:
+            cart = models.Cart.objects.get(owner=user_id)
+            movie_list = cart.movies.all()
+            goods_list = cart.goods.all()
+
+        order = models.Order.objects.create(user_id_id=edit_huiyuan_obj.id,price=price3)
+        #order.user_id_id = edit_huiyuan_obj.id #订单所有者
+        if movie_list:
+            for movie_obj in movie_list:
+                order.movies.add(movie_obj)
+        if goods_list:
+            for good_obj in goods_list:
+                order.goods.add(good_obj)
+        #order.price = price3
+        order.save()
+        user_obj = models.UserInfo.objects.filter(id=user_id)[0]
+        delete_cart(request)
         return render(request, "huiyuan_list.html", {"all_huiyuan": all_huiyuan_obj})
 
 def delete_movie(request):
@@ -575,8 +610,24 @@ def edit_huiyuan(request):
 
 
 #订单详情
-def order_list(request):
-    pass
+def order(request):
+    movies = []
+    s1 = []
+    huiyuan_id = request.GET.get("id", None)  # 从请求URl中获取ID参数
+    all_order = models.Order.objects.filter(user_id_id=huiyuan_id)
+    user_obj = models.Huiyuan.objects.get(id=huiyuan_id)
+    user_name = user_obj.name
+    #order = models.Order.objects.get(user_id_id = huiyuan_id)
+    # for order in all_order:
+    #     movies.append(order.movies.all())
+    # # s1 = order.movies.all()
+    # # for s in s1:
+    # #     print(s.mname)
+    # for i in range(len(movies)):
+    #     for j in range(len(movies[0])):
+    #         print(movies[i][j].mname)
+    #goods_list = cart.goods.all()
+    return render(request,"order.html",{"all_order":all_order,"username":user_name,"movies":movies})
 
 def test(request):
     print(request.GET)

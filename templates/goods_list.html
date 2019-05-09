@@ -181,6 +181,12 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="/static/jquery-3.3.1.js"></script>
 <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-
+{% if messages %}
+        <script>
+            {% for msg in messages %}
+                alert('{{ msg.message }}');
+            {% endfor %}
+        </script>
+    {% endif %}
 </body>
 </html>
